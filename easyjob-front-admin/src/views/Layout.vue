@@ -20,6 +20,7 @@
     </div>
     <div class="body">
       <!-- 左侧菜单栏 -->
+      <!-- 一级菜单 -->
       <div class="left-sider">
         <div class="menu-list">
           <div
@@ -34,6 +35,7 @@
             <div class="menu-name">{{ item.menuName }}</div>
           </div>
         </div>
+        <!-- 二级菜单 -->
         <div class="menu-sub-list">
           <div
             :class="[
@@ -48,7 +50,23 @@
       </div>
       <!-- 中间路由页面 -->
       <div class="main-content">
-        <div class="tag-content"></div>
+        <div class="tag-content">
+          <el-tabs
+            v-model="currentSubMenu.menuUrl"
+            type="border-card"
+            tab-position="top"
+            @tab-click="tabClick"
+            @edit="editTab"
+          >
+            <el-tab-pane
+              v-for="item in tabList"
+              :label="item.menuName"
+              :name="item.menuUrl"
+              :closable="tabList.length > 1"
+            >
+            </el-tab-pane>
+          </el-tabs>
+        </div>
         <div class="body-content">
           <router-view></router-view>
         </div>
@@ -58,21 +76,135 @@
 </template>
 
 <script setup>
-import { ref, reactive, getCurrentInstance, nextTick } from "vue";
+import { ref, reactive, getCurrentInstance, nextTick, onMounted } from "vue";
+import { useRoute, useRouter } from "vue-router";
+
 const { proxy } = getCurrentInstance();
+const router = useRouter();
+const route = useRoute();
 
 const userInfo = ref(
   JSON.parse(sessionStorage.getItem("userInfo")) || { menuList: [] }
 );
 
-// 菜单高亮
-const currentPmenu = ref({ children: [] }); // 二级菜单
+// 菜单转化为map对象:即 key:value 的形式
+const menuMap = ref({});
+const initMenuMap = () => {
+  const menuList = userInfo.value.menuList;
+  for (let p = 0; p < menuList.length; p++) {
+    const pMenu = menuList[p];
+    menuMap.value[pMenu.menuUrl] = pMenu;
+    if (pMenu.children && pMenu.children.length > 0) {
+      for (let s = 0; s < pMenu.children.length; s++) {
+        const sub = pMenu.children[s];
+        sub["parentPath"] = pMenu.menuUrl;
+        menuMap.value[sub.menuUrl] = sub;
+      }
+    }
+  }
+};
+
+// 菜单:分为父级/一级/二级
+const currentPmenu = ref({ children: [] }); // 一级菜单
+
+// 一级菜单点击
+const pMenuClickHandle = (data) => {
+  currentPmenu.value = data;
+  // 默认选中第一个
+  let firstSubMenu = data.children[0];
+  jump(firstSubMenu);
+};
+
+// 跳转
+const jump = (data) => {
+  if (currentSubMenu.value.menuUrl == data.menuUrl) {
+    return;
+  }
+  currentSubMenu.value = data;
+  addTabHandler(data);
+  router.push(data.menuUrl);
+};
+
+// 当前二级菜单
 const currentSubMenu = ref({});
 
-// 退出登录
-const logout = () => {};
+// 保存菜单状态，防止刷新页面时重置。addTab存在则添加对应的tab标签页
+const menuSelect = (curPath, addTab) => {
+  let curMenu = menuMap.value[curPath];
+  if (curMenu == null) {
+    return;
+  }
+  currentPmenu.value = menuMap.value[curMenu.parentPath];
+  currentSubMenu.value = curMenu;
+  if (addTab) {
+    // 刷新时展示出tab
+    addTabHandler(curMenu);
+  }
+};
 
-// 修改密码
+onMounted(() => {
+  initMenuMap();
+  menuSelect(route.path, true);
+});
+
+// tab的操作 要点：关闭一个要默认聚焦下一个tab
+const tabList = ref([]);
+
+// 添加tab
+const addTabHandler = (curMenu) => {
+  console.log(tabList.value);
+  let currentTab = tabList.value.find((item) => {
+    return item.menuUrl == currentSubMenu.value.menuUrl;
+  });
+  if (currentTab == null) {
+    tabList.value.push(curMenu);
+  }
+};
+
+const tabClick = (e) => {
+  const path = e.props.name;
+  menuSelect(path);
+  router.push(path);
+};
+
+const editTab = (targetKey, action) => {
+  if (action !== "remove") {
+    return;
+  }
+  // 移除tab
+  let curPath = currentSubMenu.value.menuUrl;
+  let tabs = tabList.value;
+  if (targetKey == curPath) {
+    // 移除当前tab，需要换tab聚焦
+    tabs.forEach((tab, index) => {
+      if (tab.menuUrl === targetKey) {
+        let nextTab = tabs[index + 1] || tabs[index - 1];
+        if (nextTab) {
+          curPath = nextTab.menuUrl;
+        }
+      }
+    });
+  }
+  tabList.value = tabs.filter((tab) => tab.menuUrl !== targetKey);
+  if (curPath !== currentSubMenu.value.menuUrl) {
+    router.push(curPath);
+    menuSelect(curPath);
+  }
+};
+
+// 退出登录
+const logout = () => {
+  proxy.Confirm("确定要退出吗？", async () => {
+    let result = await proxy.Request({
+      url: "/logout",
+    });
+    if (!result) return;
+    sessionStorage.removeItem("userInfo");
+    router.push("/login");
+  });
+};
+
+// 修改密码 7p 16min
 const updateMyPwd = () => {};
 </script>
 

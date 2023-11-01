@@ -8,8 +8,8 @@ import "@/assets/icon/iconfont.css";
 
 import VueCookies from "vue-cookies";
 import Message from "@/utils/Message";
-
 import Request from "@/utils/Request";
+import Confirm from "@/utils/Confirm";
 
 const app = createApp(App);
 
@@ -20,5 +20,6 @@ app.use(router);
 app.config.globalProperties.Request = Request;
 app.config.globalProperties.VueCookies = VueCookies;
 app.config.globalProperties.Message = Message;
+app.config.globalProperties.Confirm = Confirm;
 
 app.mount("#app");

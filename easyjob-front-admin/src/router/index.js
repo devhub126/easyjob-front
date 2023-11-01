@@ -18,6 +18,21 @@ const router = createRouter({
           name: "首页",
           component: () => import("@/views/home/Home.vue"),
         },
+        {
+          path: "/content/category",
+          name: "内容管理",
+          component: () => import("@/views/content/CategoryList.vue"),
+        },
+        {
+          path: "/app/userDevice",
+          name: "App发布",
+          component: () => import("@/views/app/UserDevice.vue"),
+        },
+        {
+          path: "/settings/menu",
+          name: "设置",
+          component: () => import("@/views/settings/Menu.vue"),
+        },
       ],
     },
   ],
