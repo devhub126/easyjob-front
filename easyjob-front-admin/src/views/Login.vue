@@ -4,7 +4,7 @@
     <div class="login-panel">
       <el-form
         class="login-form"
-        :model="formDate"
+        :model="formData"
         ref="formDataRef"
         :rules="rules"
         @submit.prevent
@@ -24,6 +24,8 @@
         </el-form-item>
         <el-form-item prop="password">
           <el-input
+            show-password
+            type="password"
             size="large"
             clearable
             placeholder="请输入密码"
@@ -34,17 +36,24 @@
           ></el-input>
         </el-form-item>
         <el-form-item prop="checkCode">
-          <div class="check-code-panel"></div>
-          <el-input
-            size="large"
-            clearable
-            placeholder="请输入验证码"
-            v-model.trim="formData.checkCode"
-          >
-            <template #prefix>
-              <span class="iconfont icon-yanzhengyanzhengma"></span> </template
-          ></el-input>
-          <img src="/api/checkCode?time=1697873544896" />
+          <div class="check-code-panel">
+            <el-input
+              size="large"
+              clearable
+              placeholder="请输入验证码"
+              v-model.trim="formData.checkCode"
+            >
+              <template #prefix>
+                <span
+                  class="iconfont icon-yanzhengyanzhengma"
+                ></span> </template
+            ></el-input>
+            <img
+              :src="checkCodeUrl"
+              class="check-code"
+              @click="changeCheckCode"
+            />
+          </div>
         </el-form-item>
         <el-form-item>
           <div class="rememberme-panel">
@@ -57,7 +66,11 @@
           </div>
         </el-form-item>
         <el-form-item>
-          <el-button class="op-btn" type="primary" size="large" @click=""
+          <el-button
+            class="op-btn"
+            type="primary"
+            size="large"
+            @click="doSubmit"
             >登录</el-button
           >
         </el-form-item>
@@ -67,13 +80,95 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { nextTick, onMounted, getCurrentInstance, ref, reactive } from "vue";
+import { useRouter } from "vue-router";
+import md5 from "js-md5";
+
+const { proxy } = getCurrentInstance();
+const router = useRouter();
+
+const api = {
+  checkCode: "/api/checkCode",
+  login: "/login",
+};
 
 const formData = ref({});
 const formDataRef = ref();
 const rules = {
-  title: [{ required: true, message: "请输入内容" }],
+  phone: [{ required: true, message: "请输入手机号" }],
+  password: [{ required: true, message: "请输入密码" }],
+  checkCode: [{ required: true, message: "请输入图片验证码" }],
 };
+
+// 登录
+const doSubmit = () => {
+  formDataRef.value.validate(async (valid) => {
+    if (!valid) {
+      return;
+    }
+    let params = {};
+    Object.assign(params, formData.value);
+    // 判断密码框是手动输入的原始密码还是cookie里获取的已加密密码
+    let cookieLoginInfo = proxy.VueCookies.get("loginInfo");
+    let cookiePassword =
+      cookieLoginInfo == null ? null : cookieLoginInfo.password;
+    if (params.password !== cookiePassword) {
+      params.password = md5(params.password); // 对原始密码加密
+    }
+    // console.log(params.password);
+    let result = await proxy.Request({
+      url: api.login,
+      params,
+      errorCallback: () => {
+        changeCheckCode();
+      },
+    });
+    if (!result) {
+      return;
+    }
+    if (params.rememberMe) {
+      const loginInfo = {
+        phone: params.phone,
+        password: params.password,
+        rememberMe: params.rememberMe, // 记住我
+      };
+      proxy.VueCookies.set("loginInfo", loginInfo, "7d"); // 存储时长:7天
+    } else {
+      proxy.VueCookies.remove("loginInfo"); // 存储时长:7天
+    }
+    proxy.Message.success("登录成功！");
+    sessionStorage.setItem("userInfo", JSON.stringify(result.data)); // 存储返回信息
+    let firstMenu = result.data.menuList[0]; // 第一个菜单项，用于默认选中
+    if (firstMenu.children.length > 0) {
+      // 如果有子菜单，则取里面的第一个子菜单
+      firstMenu = firstMenu.children[0];
+    }
+    router.push(firstMenu.menuUrl);
+  });
+};
+
+// 验证码
+const checkCodeUrl = ref(null);
+const changeCheckCode = () => {
+  checkCodeUrl.value = `${api.checkCode}?time=${new Date()}`;
+};
+
+// 初始化
+const init = () => {
+  nextTick(() => {
+    changeCheckCode(); // 获取验证码
+    formDataRef.value.resetFields();
+    formData.value = {};
+    const cookieLoginInfo = proxy.VueCookies.get("loginInfo");
+    if (cookieLoginInfo) {
+      formData.value = cookieLoginInfo;
+    }
+  });
+};
+
+onMounted(() => {
+  init();
+});
 </script>
 
 <style lang="scss" scoped>
