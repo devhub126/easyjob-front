@@ -1,0 +1,90 @@
+/* 滚动条样式 */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgb(239, 239, 239);
+  border-radius: 2px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #bfbfbf;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #bfbfbf;
+}
+
+::-webkit-scrollbar-corner {
+  background: #bfbfbf;
+}
+
+:root {
+  --text1: #9499a0;
+  --text2: #61666d;
+  --icon: #9499a0;
+  --text_link: #409eff;
+  --blue: #007fff;
+  --tag: #7bcdef;
+  --pink: #ff6699;
+}
+
+body {
+  margin: 0px;
+  padding: 0px;
+  color: #636d7e;
+  font-size: 14px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.a-link {
+  text-decoration: none;
+  color: var(--blue);
+}
+
+/* 重写elp 部分样式*/
+.top-panel {
+  .el-card__body {
+    padding: 15px;
+  }
+
+  .el-form-item {
+    margin-bottom: 0px;
+  }
+}
+
+.row-op-panel {
+  a {
+    text-decoration: none;
+    color: var(--blue);
+    margin-right: 8px;
+  }
+
+  a:last-child {
+    margin-right: 0px;
+  }
+
+  .not-allow {
+    cursor: not-allowed;
+    color: #ddd;
+    text-decoration: none;
+  }
+}
+
+.table-data-card {
+  margin-top: 10px;
+
+  .el-card__body {
+    padding: 10px;
+  }
+}
+
+.el-form-item__content {
+  width: 100%;
+}
