@@ -72,10 +72,13 @@
         </div>
       </div>
     </div>
+    <!-- 修改密码组件 -->
+    <update-pwd ref="updateMyPwdRef"></update-pwd>
   </div>
 </template>
 
 <script setup>
+import UpdatePwd from "./UpdatePwd.vue";
 import { ref, reactive, getCurrentInstance, nextTick, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
@@ -152,7 +155,7 @@ const tabList = ref([]);
 
 // 添加tab
 const addTabHandler = (curMenu) => {
-  console.log(tabList.value);
+  // console.log(tabList.value);
   let currentTab = tabList.value.find((item) => {
     return item.menuUrl == currentSubMenu.value.menuUrl;
   });
@@ -204,8 +207,11 @@ const logout = () => {
   });
 };
 
-// 修改密码 7p 16min
-const updateMyPwd = () => {};
+// 修改密码
+const updateMyPwdRef = ref();
+const updateMyPwd = () => {
+  updateMyPwdRef.value.show();
+};
 </script>
 
 <style lang="scss" scoped>
