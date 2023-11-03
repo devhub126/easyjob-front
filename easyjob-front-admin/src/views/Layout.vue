@@ -310,12 +310,12 @@ const updateMyPwd = () => {
     .main-content {
       width: 100%;
       .tag-content {
-        // :deep .el-tabs--border-card {
-        //   border: none;
-        // }
-        // :deep .el-tabs__content {
-        //   display: none;
-        // }
+        :deep(.el-tabs--border-card) {
+          border: none;
+        }
+        :deep(.el-tabs__content) {
+          display: none;
+        }
       }
       .body-content {
         padding: 10px;

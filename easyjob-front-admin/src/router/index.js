@@ -31,7 +31,7 @@ const router = createRouter({
         {
           path: "/settings/menu",
           name: "设置",
-          component: () => import("@/views/settings/Menu.vue"),
+          component: () => import("@/views/setting/MenuList.vue"),
         },
       ],
     },
