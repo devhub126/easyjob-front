@@ -136,7 +136,6 @@ const loadAppWeekData = async () => {
   // }
   // const data = result.data;
   const data = await mockAppWeekData.data; // 使用模拟数据
-  console.log(data);
   const xAxisData = data.dataList;
   const seriesData = [];
   const color = ["#1b9cfc", "#67c23a"];
@@ -179,7 +178,6 @@ const loadContentWeekData = async () => {
   // }
   // const data = result.data;
   const data = await mockContentWeekData.data; // 使用模拟数据
-  console.log(data);
   const xAxisData = data.dataList;
   const seriesData = [];
   const color = ["#1b9cfc", "#67c23a", "#33166e", "#fb7993", "#a4c4fc"];

@@ -14,6 +14,7 @@ import Verify from "@/utils/Verify";
 
 // 引入全局组件
 import Dialog from "@/components/Dialog.vue";
+import Table from "@/components/Table.vue";
 
 const app = createApp(App);
 
@@ -22,6 +23,7 @@ app.use(router);
 
 // 定义全局组件
 app.component("Dialog", Dialog);
+app.component("Table", Table);
 
 //配置全局变量
 app.config.globalProperties.Request = Request;

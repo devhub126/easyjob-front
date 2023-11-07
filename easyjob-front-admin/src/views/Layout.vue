@@ -38,6 +38,7 @@
         <!-- 二级菜单 -->
         <div class="menu-sub-list">
           <div
+            @click="jump(sub)"
             :class="[
               'sub-menu',
               currentSubMenu.menuUrl == sub.menuUrl ? 'active' : '',

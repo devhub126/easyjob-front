@@ -5,7 +5,7 @@
       :title="dialogConfig.title"
       :buttons="dialogConfig.buttons"
       width="400px"
-      :showCancel="false"
+      :showCancel="true"
       @close="dialogConfig.show = false"
     >
       <el-form

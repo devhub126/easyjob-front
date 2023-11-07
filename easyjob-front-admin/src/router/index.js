@@ -30,8 +30,13 @@ const router = createRouter({
         },
         {
           path: "/settings/menu",
-          name: "设置",
+          name: "菜单管理",
           component: () => import("@/views/setting/MenuList.vue"),
+        },
+        {
+          path: "/settings/role",
+          name: "角色管理",
+          component: () => import("@/views/setting/RoleList.vue"),
         },
       ],
     },
