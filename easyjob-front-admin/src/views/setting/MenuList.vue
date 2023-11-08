@@ -23,7 +23,10 @@
               <template #default="{ node, data }">
                 <span class="custom-node-style">
                   <span class="node-title">{{ data.menuName }}</span>
-                  <el-dropdown trigger="click">
+                  <el-dropdown
+                    trigger="click"
+                    v-has="proxy.PermissionCode.menu.edit"
+                  >
                     <span class="iconfont icon-more"></span>
                     <template #dropdown>
                       <el-dropdown-menu>

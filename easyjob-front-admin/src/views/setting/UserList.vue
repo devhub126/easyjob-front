@@ -28,7 +28,12 @@
             </el-col>
             <el-col :span="6" :style="{ paddingLeft: '10px' }">
               <el-button type="success" @click="loadDataList()">查询</el-button>
-              <el-button type="primary" @click="showEdit()">新增用户</el-button>
+              <el-button
+                type="primary"
+                @click="showEdit()"
+                v-has="proxy.PermissionCode.account.edit"
+                >新增用户</el-button
+              >
             </el-col>
           </el-row>
         </el-form>
@@ -52,14 +57,19 @@
           }}</span>
         </template>
         <template #slotOperation="{ index, row }">
-          <div class="row-op-panel">
+          <div
+            class="row-op-panel"
+            v-if="!(userInfo.superAdmin && userInfo.userId == row.userId)"
+          >
             <a
               class="a-link"
               href="javascript:void(0)"
               @click.prevent="showEdit(row)"
+              v-has="proxy.PermissionCode.account.edit"
               >修改</a
             >
             <a
+              v-has="proxy.PermissionCode.account.updatePwd"
               class="a-link"
               href="javascript:void(0)"
               @click.prevent="updateAccountPwd(row)"
@@ -68,12 +78,14 @@
             <a
               :class="!row.status ? 'text-green' : 'text-red'"
               @click.prevent="changeAccountStatus(row)"
+              v-has="proxy.PermissionCode.account.updateStatus"
               >{{ !row.status ? "启用" : "禁用" }}</a
             >
             <a
               class="a-link"
               href="javascript:void(0)"
               @click.prevent="delAccount(row)"
+              v-has="proxy.PermissionCode.account.del"
               >删除</a
             >
           </div>
@@ -98,6 +110,11 @@ const api = {
   delAccount: "/settings/delAccount",
   updateStatus: "/settings/updateStatus",
 };
+
+// 用于权限控制
+const userInfo = ref(
+  JSON.parse(sessionStorage.getItem("userInfo")) || { menuList: [] }
+);
 
 const searchForm = ref({});
 const tableData = ref({});

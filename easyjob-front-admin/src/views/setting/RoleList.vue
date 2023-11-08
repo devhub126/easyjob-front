@@ -28,7 +28,12 @@
             </el-col>
             <el-col :span="6" :style="{ paddingLeft: '10px' }">
               <el-button type="success" @click="loadDataList()">查询</el-button>
-              <el-button type="primary" @click="showEdit()">新增角色</el-button>
+              <el-button
+                type="primary"
+                @click="showEdit()"
+                v-has="proxy.PermissionCode.role.edit"
+                >新增角色</el-button
+              >
             </el-col>
           </el-row>
         </el-form>
@@ -55,12 +60,14 @@
                   class="a-link"
                   href="javascript:void(0)"
                   @click.prevent="showEdit(row)"
+                  v-has="proxy.PermissionCode.role.edit"
                   >修改</a
                 >
                 <a
                   class="a-link"
                   href="javascript:void(0)"
                   @click.prevent="delRole(row)"
+                  v-has="proxy.PermissionCode.role.del"
                   >删除</a
                 >
               </div>
@@ -73,7 +80,12 @@
           <template #header>
             <div class="right-head">
               <span>菜单信息</span>
-              <el-button type="primary" @click="saveRoleMenu">保存</el-button>
+              <el-button
+                type="primary"
+                @click="saveRoleMenu"
+                v-has="proxy.PermissionCode.role.edit"
+                >保存</el-button
+              >
             </div>
           </template>
           <div class="detail-tree-panel">

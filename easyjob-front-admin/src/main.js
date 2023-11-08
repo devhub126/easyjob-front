@@ -11,6 +11,7 @@ import Message from "@/utils/Message";
 import Request from "@/utils/Request";
 import Confirm from "@/utils/Confirm";
 import Verify from "@/utils/Verify";
+import PermissionCode from "@/utils/PermissionCode";
 
 // 引入全局组件
 import Dialog from "@/components/Dialog.vue";
@@ -31,5 +32,19 @@ app.config.globalProperties.VueCookies = VueCookies;
 app.config.globalProperties.Message = Message;
 app.config.globalProperties.Confirm = Confirm;
 app.config.globalProperties.Verify = Verify;
+app.config.globalProperties.PermissionCode = PermissionCode;
+
+// 使用自定义指令做权限验证
+app.directive("has", {
+  mounted: (el, binding, vnode) => {
+    let userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
+    let permissionCodeList = userInfo.permissionCodeList;
+    permissionCodeList =
+      permissionCodeList == undefined ? [] : permissionCodeList;
+    if (!permissionCodeList.includes(binding.value)) {
+      el.parentNode.removeChild(el);
+    }
+  },
+});
 
 app.mount("#app");
