@@ -16,6 +16,8 @@ import PermissionCode from "@/utils/PermissionCode";
 // 引入全局组件
 import Dialog from "@/components/Dialog.vue";
 import Table from "@/components/Table.vue";
+import Cover from "@/components/Cover.vue";
+import CoverUpload from "@/components/CoverUpload.vue";
 
 const app = createApp(App);
 
@@ -25,6 +27,8 @@ app.use(router);
 // 定义全局组件
 app.component("Dialog", Dialog);
 app.component("Table", Table);
+app.component("Cover", Cover);
+app.component("CoverUpload", CoverUpload);
 
 //配置全局变量
 app.config.globalProperties.Request = Request;
@@ -33,6 +37,11 @@ app.config.globalProperties.Message = Message;
 app.config.globalProperties.Confirm = Confirm;
 app.config.globalProperties.Verify = Verify;
 app.config.globalProperties.PermissionCode = PermissionCode;
+app.config.globalProperties.globalInfo = {
+  // 图像
+  avatarUrl: "/api/file/getAvatar/",
+  imageUrl: "/api/file/getImage/",
+};
 
 // 使用自定义指令做权限验证
 app.directive("has", {
