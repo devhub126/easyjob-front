@@ -30,4 +30,7 @@ export default {
   shareCode: (rule, value, callback) => {
     return verify(rule, value, regs.shareCode, callback);
   },
+  phone: (rule, value, callback) => {
+    return verify(rule, value, regs.phone, callback);
+  },
 };

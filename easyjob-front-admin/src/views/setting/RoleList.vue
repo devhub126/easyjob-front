@@ -113,6 +113,7 @@ const api = {
   saveRoleMenu: "/settings/saveRoleMenu",
   roleDetail: "/settings/getRoleByRoleId",
   delRole: "/settings/delRole",
+  getMaxRoleId: "/settings/getMaxRoleId",
 };
 
 const searchForm = ref({});

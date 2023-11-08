@@ -15,7 +15,7 @@
         @submit.prevent
       >
         <!--input输入-->
-        <el-form-item label="角色名称" prop="menuName">
+        <el-form-item label="角色名称" prop="roleName">
           <el-input v-model="formData.roleName" :maxLength="20"></el-input>
         </el-form-item>
         <el-form-item label="关联菜单" prop="menuIds" v-if="!formData.roleId">
