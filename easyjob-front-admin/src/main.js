@@ -20,6 +20,8 @@ import Cover from "@/components/Cover.vue";
 import CoverUpload from "@/components/CoverUpload.vue";
 import CategorySelect from "@/components/content/CategorySelect.vue";
 import SunEditor from "@/components/content/SunEditor.vue";
+import ImportData from "@/components/content/ImportData.vue";
+import Badge from "@/components/Badge.vue";
 
 const app = createApp(App);
 
@@ -33,6 +35,8 @@ app.component("Cover", Cover);
 app.component("CoverUpload", CoverUpload);
 app.component("CategorySelect", CategorySelect);
 app.component("SunEditor", SunEditor);
+app.component("Badge", Badge);
+app.component("ImportData", ImportData);
 
 //配置全局变量
 app.config.globalProperties.Request = Request;

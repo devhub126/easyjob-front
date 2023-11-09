@@ -78,7 +78,7 @@
                   <el-button
                     type="primary"
                     size="small"
-                    @click="showEdit()"
+                    @click="importData()"
                     v-has="proxy.PermissionCode.account.edit"
                     >批量导入</el-button
                   >
@@ -104,9 +104,6 @@
       </el-card>
     </div>
     <el-card class="table-data-card">
-      <template #header>
-        <span>问题列表</span>
-      </template>
       <Table
         ref="tableInfoRef"
         :columns="columns"
@@ -117,6 +114,12 @@
       >
         <template #slotDifficultyLevel="{ index, row }">
           <el-rate v-model="row.difficultyLevel" :disabled="true"></el-rate>
+        </template>
+        <template #slotStatus="{ index, row }">
+          <Badge
+            :showType="row.status == 0 ? 'orange' : 'green'"
+            :text="row.status == 0 ? '待发布' : '已发布'"
+          ></Badge>
         </template>
         <template #slotOperation="{ index, row }">
           <div class="row-op-panel">
@@ -140,6 +143,12 @@
     </el-card>
     <!-- 新增/修改 -->
     <QuestionEdit ref="QuestionEditRef" @reload="loadDataList"></QuestionEdit>
+    <!-- 引入Excel: type=0 表示上传的问题类型  19p完-->
+    <ImportData
+      ref="importDataRef"
+      :type="0"
+      @reload="loadDataList"
+    ></ImportData>
   </div>
 </template>
 
@@ -164,7 +173,8 @@ const userInfo = ref(
 const searchForm = ref({});
 const tableData = ref({});
 const tableOptions = ref({
-  extHeight: 125,
+  extHeight: 10,
+  selectType: "checkbox",
 });
 
 const columns = [
@@ -200,27 +210,18 @@ const loadDataList = async () => {
   Object.assign(tableData.value, result.data);
 };
 
-// 修改状态
-const changeAccountStatus = (data) => {
-  let status = data.status == 0 ? 1 : 0;
-  let info = status == 0 ? "禁用" : "启用";
-  proxy.Confirm(`确定要${info + data.userName}吗？`, async () => {
-    let result = await proxy.Request({
-      url: api.updateStatus,
-      params: {
-        userId: data.userId,
-        status: status,
-      },
-    });
-    if (!result) {
-      return;
-    }
-    proxy.Message.success("操作成功!");
-    loadDataList();
-  });
+const QuestionEditRef = ref();
+const showEdit = (data = {}) => {
+  QuestionEditRef.value.showEdit(Object.assign({}, data));
 };
 
-// 删除角色
+// 导入
+const importDataRef = ref();
+const importData = () => {
+  importDataRef.value.showImport();
+};
+
+// 删除提问
 const delQuestion = (data) => {
   proxy.Confirm(`确定要删除${data.userName}吗？`, async () => {
     let result = await proxy.Request({
@@ -235,11 +236,6 @@ const delQuestion = (data) => {
     proxy.Message.success("删除成功!");
     loadDataList();
   });
-};
-
-const QuestionEditRef = ref();
-const showEdit = (data = {}) => {
-  QuestionEditRef.value.showEdit(Object.assign({}, data));
 };
 </script>
 
