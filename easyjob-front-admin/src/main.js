@@ -18,6 +18,8 @@ import Dialog from "@/components/Dialog.vue";
 import Table from "@/components/Table.vue";
 import Cover from "@/components/Cover.vue";
 import CoverUpload from "@/components/CoverUpload.vue";
+import CategorySelect from "@/components/content/CategorySelect.vue";
+import SunEditor from "@/components/content/SunEditor.vue";
 
 const app = createApp(App);
 
@@ -29,6 +31,8 @@ app.component("Dialog", Dialog);
 app.component("Table", Table);
 app.component("Cover", Cover);
 app.component("CoverUpload", CoverUpload);
+app.component("CategorySelect", CategorySelect);
+app.component("SunEditor", SunEditor);
 
 //配置全局变量
 app.config.globalProperties.Request = Request;

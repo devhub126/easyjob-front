@@ -24,6 +24,11 @@ const router = createRouter({
           component: () => import("@/views/content/CategoryList.vue"),
         },
         {
+          path: "/content/question",
+          name: "八股文管理",
+          component: () => import("@/views/content/questionList.vue"),
+        },
+        {
           path: "/app/userDevice",
           name: "App发布",
           component: () => import("@/views/app/UserDevice.vue"),
